@@ -87,7 +87,8 @@ public class RecyclerBanner extends FrameLayout implements CounterTimer.OnTimerL
         addView(mRecyclerBanner);
         addView(mIndicatorLayout);
 
-        mTimer = new CounterTimer(5000,this);
+        mTimer = new CounterTimer(context,5000);
+        mTimer.setListener(this);
     }
 
     public RecyclerBanner setOrientation(int orientation) {
@@ -97,6 +98,11 @@ public class RecyclerBanner extends FrameLayout implements CounterTimer.OnTimerL
 
     public RecyclerBanner setData(List<?> mData) {
         this.mData = mData;
+        return this;
+    }
+
+    public RecyclerBanner setTag(String tag) {
+        mTimer.setTag(tag);
         return this;
     }
 
@@ -181,8 +187,8 @@ public class RecyclerBanner extends FrameLayout implements CounterTimer.OnTimerL
             mRecyclerBanner.post(new Runnable() {
                 @Override
                 public void run() {
-                    mRecyclerBanner.scrollToPosition(1000);
-                    mIndicatorViews.get(1000%mData.size()).setImageResource(mIndicatorIds[1]);
+                    mRecyclerBanner.scrollToPosition(mData.size()*500);
+                    mIndicatorViews.get(0).setImageResource(mIndicatorIds[1]);
                     mTimer.start();
                 }
             });
@@ -265,13 +271,5 @@ public class RecyclerBanner extends FrameLayout implements CounterTimer.OnTimerL
                 mRecyclerBanner.smoothScrollToPosition(current);
             }
         }
-    }
-
-    public void onPause() {
-        mTimer.pause();
-    }
-
-    public void onDestroy() {
-        mTimer.destroy();
     }
 }
