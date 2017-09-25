@@ -31,7 +31,7 @@ import java.util.List;
 public class RecyclerBanner extends FrameLayout implements CounterTimer.OnTimerListener {
 
     //普通的RecyclerView  Banner
-    private RecyclerView mRecyclerBanner;
+    private RecyclerView mRecyclerView;
 
     //数据集
     private List mData;
@@ -78,13 +78,13 @@ public class RecyclerBanner extends FrameLayout implements CounterTimer.OnTimerL
 
         //创建广告栏
         BannerLayoutManager bannerLayout = new BannerLayoutManager(context);
-        mRecyclerBanner = new RecyclerView(context);
-        mRecyclerBanner.setLayoutManager(bannerLayout);
+        mRecyclerView = new RecyclerView(context);
+        mRecyclerView.setLayoutManager(bannerLayout);
 
         //创建一个放指示器的容器
         mIndicatorLayout = new LinearLayout(context);
 
-        addView(mRecyclerBanner);
+        addView(mRecyclerView);
         addView(mIndicatorLayout);
 
         mTimer = new CounterTimer(context,5000);
@@ -108,7 +108,7 @@ public class RecyclerBanner extends FrameLayout implements CounterTimer.OnTimerL
 
     //初始化banner并加入
     public RecyclerBanner setAdapter(RecyclerView.Adapter mAdapter) {
-        mRecyclerBanner.setAdapter(mAdapter);
+        mRecyclerView.setAdapter(mAdapter);
         mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onChanged() {
@@ -119,7 +119,7 @@ public class RecyclerBanner extends FrameLayout implements CounterTimer.OnTimerL
         });
 
         //重写OnScrollListener实现相当于viewPager的OnPageChangeListener
-        mRecyclerBanner.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -133,7 +133,7 @@ public class RecyclerBanner extends FrameLayout implements CounterTimer.OnTimerL
         });
 
         //重写touch事件，用户在滑动的时候，计时器暂停，松开则继续
-        mRecyclerBanner.setOnTouchListener(new OnTouchListener() {
+        mRecyclerView.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
                 switch (event.getAction()) {
@@ -154,7 +154,7 @@ public class RecyclerBanner extends FrameLayout implements CounterTimer.OnTimerL
         //为banner指定snapHelper
         //每次滑动一页
         PagerSnapHelper snapHelper = new PagerSnapHelper();
-        snapHelper.attachToRecyclerView(mRecyclerBanner);
+        snapHelper.attachToRecyclerView(mRecyclerView);
         return this;
     }
 
@@ -184,10 +184,10 @@ public class RecyclerBanner extends FrameLayout implements CounterTimer.OnTimerL
         }
 
         if (!mData.isEmpty() && mData.size() > 1)
-            mRecyclerBanner.post(new Runnable() {
+            mRecyclerView.post(new Runnable() {
                 @Override
                 public void run() {
-                    mRecyclerBanner.scrollToPosition(mData.size()*500);
+                    mRecyclerView.scrollToPosition(mData.size()*500);
                     mIndicatorViews.get(0).setImageResource(mIndicatorIds[1]);
                     mTimer.start();
                 }
@@ -264,11 +264,11 @@ public class RecyclerBanner extends FrameLayout implements CounterTimer.OnTimerL
     @Override
     public void onTick() {
         if (!mData.isEmpty()) {
-            LinearLayoutManager layout = (LinearLayoutManager)mRecyclerBanner.getLayoutManager();
+            LinearLayoutManager layout = (LinearLayoutManager) mRecyclerView.getLayoutManager();
             int current = layout.findFirstCompletelyVisibleItemPosition();
             if (current < Integer.MAX_VALUE) {
                 current++;
-                mRecyclerBanner.smoothScrollToPosition(current);
+                mRecyclerView.smoothScrollToPosition(current);
             }
         }
     }
